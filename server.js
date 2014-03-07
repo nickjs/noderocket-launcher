@@ -3,7 +3,8 @@ var app = express()
   , server = require('http').createServer(app)
   , io = require('socket.io').listen(server);
 
-var Launcher = require('./launcher');
+//var Launcher = require('./launcher');
+var Launcher = require('./spark-launcher');
 
 
 

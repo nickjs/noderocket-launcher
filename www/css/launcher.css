@@ -1,0 +1,84 @@
+body {
+    background: url(../images/grey_wash_wall.png) repeat;
+}
+
+#container {
+    position: relative;
+    width:  320px;
+    margin: auto;
+}
+
+.gauge-digital-display {
+    margin-bottom: 1.5em;
+    background: white;
+    overflow: hidden;
+    text-align: left;
+    border-radius: 3px;
+    /*box-shadow: 3px 3px 9px #999;*/
+    -webkit-border-radius: 3px;
+    /*-webkit-box-shadow: 3px 3px 9px #999;*/
+    -moz-border-radius: 3px;
+    /*-moz-box-shadow: 3px 3px 9px #999;*/
+    background-color: rgba(255, 255, 255, 0.7);
+
+    background-color: rgb(36, 30, 30);
+    width: 60px;
+    height: 30px;
+}
+
+.gauge-digital-display > div {
+    padding: 2px;
+}
+
+.gauge-digital-display > div > canvas {
+    width: 56px;
+    height: 26px;
+}
+
+#gauge-digital-display-1 {
+    position: absolute;
+    top: 238px;
+    left: 132px;
+}
+
+#gauge-digital-display-2 {
+    position: absolute;
+    top: 78px;
+    left: 132px;
+}
+
+
+#dial-0 .needle path {
+    fill: beige;
+}
+
+#dial-0 .needle path {
+    fill: #b21f24;
+}
+
+#dial-2 .needle path {
+    fill: steelblue;
+}
+
+circle.label {
+    fill: white;
+}
+
+line.label {
+    stroke: white;
+    stroke-width: 1px;
+}
+
+text.label {
+    font-family: Arial;
+    font-size: 12px;
+    fill: white;
+}
+
+#dial-1 text.label {
+    font-size: 16px;
+}
+
+#dial-2 text.label {
+    font-size: 14px;
+}
