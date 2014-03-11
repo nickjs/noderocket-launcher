@@ -5,9 +5,9 @@ socket.on('ready', function (data) {
 
 socket.on('hello', function(data) {
   console.log('Hello, RocketMan');
-//        socket.emit('start', {
-//            dataRate: 1000
-//        });
+  socket.emit('start', {
+    dataInterval: 100
+  });
 });
 
 socket.on('data', function (data) {
@@ -21,3 +21,20 @@ socket.on('data', function (data) {
 
   updateDial(data.pressure);
 });
+
+
+function fillAndLaunch(psi) {
+  console.log('fillAndLaunch');
+  socket.emit('fillAndLaunch', psi);
+}
+
+function fill() {
+  console.log("fill");
+  socket.emit('fill');
+}
+
+function launch() {
+  console.log("launch");
+  socket.emit('launch');
+}
+

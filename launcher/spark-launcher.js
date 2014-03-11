@@ -17,7 +17,7 @@ function Launcher(opts) {
 
   this.board = new j5.Board({
     io: new Spark({
-      token: "57e35cb0e246a3a3caf9077038a95370699e375d",
+      token: "ca4e673cda4ca92aae5ebe7890d191697868fc94",
       deviceId: "55ff6e064989495346512587"
     })
   });
