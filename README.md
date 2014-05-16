@@ -21,9 +21,17 @@ __Prerequisites__
 __Running__
 
 1. Install packages:
-    npm install
+
+  ```bash
+npm install
+  ```
+
 2. Run the server:
-    node server.js
+
+  ```bash
+node server.js
+  ```
+  
 3. Open the UI at http://localhost:8082
 
 Explanations
