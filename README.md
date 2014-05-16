@@ -38,11 +38,11 @@ This file contains the launcher class, which uses [johnny-five](https://github.c
 __server.js__
 
 This file contains the web server, which does the following:
-- Create a launcher instance.
+- Creates a launcher instance.
 - Serves up files from the www directory.
 - Listens for incoming websocket connections.  When a connection is made it wires up websocket events to call launcher methods or respond to launcher events.
 
-__index.html__
+__www/index.html__
 
 This file contains the user interface, which does the following:
 - Connects a websocket to the server.
