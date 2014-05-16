@@ -38,6 +38,36 @@ io.sockets.on('connection', function (socket) {
     launcher.on('launcher-data', function(data) {
       socket.emit('data', data);
     });
+
+    // Emit launch valve data
+    launcher.on('launchValve', function(data) {
+      socket.emit('launchValve', data);
+    });
+
+    // Emit fill valve data
+    launcher.on('fillValve', function(data) {
+      socket.emit('fillValve', data);
+    });
+  });
+
+  socket.on('openFill', function(){
+    console.log('openFill');
+    launcher.openFill()
+  });
+
+  socket.on('closeFill', function(){
+    console.log('closeFill');
+    launcher.closeFill()
+  });
+
+  socket.on('openLaunch', function(){
+    console.log('openLaunch');
+    launcher.openLaunch()
+  });
+
+  socket.on('closeLaunch', function(){
+    console.log('closeLaunch');
+    launcher.closeLaunch()
   });
 
   socket.on('fillAndLaunch', function(psi) {
@@ -46,7 +76,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('fillTo', function(psi){
-    console.log('fill');
+    console.log('fill to ' + psi );
     launcher.fillTo(psi);
   });
 
@@ -55,15 +85,14 @@ io.sockets.on('connection', function (socket) {
     launcher.fill()
   });
 
-  socket.on('closeFill', function(){
-    console.log('closeFill');
-    launcher.closeFill()
-  });
-
   socket.on('launch', function() {
     console.log('launch');
     launcher.launch();
   });
+
+  socket.on('reset', function() {
+    launcher.reset();
+  })
 });
 
 

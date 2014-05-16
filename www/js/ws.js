@@ -1,3 +1,8 @@
+// pull URL params into an object
+var search = location.search.substring(1);
+var params = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+    function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
+
 var socket = io.connect('http://localhost');
 socket.on('ready', function (data) {
   console.log('Launcher Ready!',data);
@@ -6,12 +11,11 @@ socket.on('ready', function (data) {
 socket.on('hello', function(data) {
   console.log('Hello, RocketMan');
   socket.emit('start', {
-    dataInterval: 100
+    launcher: params.launcher == null ? 'l1' : params.launcher
   });
 });
 
 socket.on('data', function (data) {
-  console.log('Data', data);
   var value = Math.floor(data.pressure).toString().split('');
   value.unshift(' ');
   value.unshift(' ');
@@ -22,19 +26,31 @@ socket.on('data', function (data) {
   updateDial(data.pressure);
 });
 
+socket.on('fillValve', function (data) {
+    document.getElementById("fillValveStatus").innerHTML = data.state;
+})
+
+socket.on('launchValve', function (data) {
+    document.getElementById("launchValveStatus").innerHTML = data.state;
+})
+
+function reset() {
+    socket.emit('reset');
+}
 
 function fillAndLaunch(psi) {
-  console.log('fillAndLaunch');
   socket.emit('fillAndLaunch', psi);
 }
 
 function fill() {
-  console.log("fill");
   socket.emit('fill');
 }
 
 function launch() {
-  console.log("launch");
   socket.emit('launch');
+}
+
+function reset() {
+    socket.emit('reset');
 }
 

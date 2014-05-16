@@ -111,7 +111,7 @@ NBXDialChart = function() {
       } else {
 
         g.select('g.needle')
-          .transition().duration(1000).ease('elastic')
+          .transition().duration(10).ease('elastic')
           .attr('transform', function(d) { return 'rotate(' + a(d) + ')'; });
 
       }
