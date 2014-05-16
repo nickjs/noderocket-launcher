@@ -1,136 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
-    <link rel="stylesheet" href="css/launcher.css">
+    <title>Rocket Launcher</title>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
 <div id="container">
-    <div id="gauge"></div>
+    <div id=""></div>
 
-    <div id="gauge-digital-display-1" class="gauge-digital-display">
-        <div>
-            <canvas id="digitalPressure">
-            </canvas>
-        </div>
-    </div>
-
-    <div id="gauge-digital-display-2" class="gauge-digital-display">
-        <div>
-            <canvas id="digitalPressure2">
-            </canvas>
-        </div>
-    </div>
-
-    <div class="button" onclick="fillAndLaunch(75)"><div class="outer"><div class="height"><div class="inner">Auto</div></div></div></div>
-    <div class="button" onclick="fill()"><div class="outer"><div class="height"><div class="inner">Fill</div></div></div></div>
-    <div class="button" onclick="launch()"><div class="outer"><div class="height"><div class="inner">Launch</div></div></div></div>
-    <div class="button" onclick="reset()"><div class="outer"><div class="height"><div class="inner">Reset</div></div></div></div>
+    <div class="notification">Current Pressure: <span id="currentPressure">unknown</span></div>
     <div class="notification">Fill Valve: <span id="fillValveStatus">unknown</span></div>
     <div class="notification">Launch Valve: <span id="launchValveStatus">unknown</span></div>
+    <button onclick="openFill()">Open Fill</button>
+    <button onclick="closeFill()">Close Fill</button>
+    <button onclick="openLaunch()">Open Launch</button>
+    <button onclick="closeLaunch()">Close Launch</button>
+    <button onclick="reset()">Reset</button>
 </div>
 
+<script type="text/javascript">
+    var socket = io.connect();
+    socket.on('ready', function (data) {
+        console.log('Launcher Ready!',data);
+    });
 
+    socket.on('hello', function(data) {
+        console.log('Hello, RocketMan');
+        socket.emit('start');
+    });
 
+    socket.on('data', function (data) {
+        document.getElementById("currentPressure").innerHTML = Math.floor(data.pressure);
+    });
 
+    socket.on('fillValve', function (data) {
+        document.getElementById("fillValveStatus").innerHTML = data.state;
+    })
 
-<!--
-<div id="container">
-    <a href="#" class="button">Launch</a>
-    &lt;!&ndash;<a href="#" class="button">Stop</a>&ndash;&gt;
-</div>-->
+    socket.on('launchValve', function (data) {
+        document.getElementById("launchValveStatus").innerHTML = data.state;
+    })
 
+    function reset() {
+        socket.emit('reset');
+    }
 
-<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/js/lib/d3.min.js"></script>
-<script type="text/javascript" src="/js/lib/dialchart.js"></script>
-<script type="text/javascript" src="/js/lib/segment-display.js"></script>
+    function openFill() {
+        socket.emit('openFill');
+    }
 
-<script type="text/javascript" src="/js/ws.js"></script>
+    function closeFill() {
+        socket.emit('closeFill');
+    }
 
-<script>
-    var display = new SegmentDisplay("digitalPressure");
-    display.pattern = "###";
-    display.displayAngle = 6;
-    display.digitHeight = 20;
-    display.digitWidth = 14;
-    display.digitDistance = 2.5;
-    display.segmentWidth = 2;
-    display.segmentDistance = 0.3;
-    display.segmentCount = 7;
-    display.cornerType = 3;
-    display.colorOn = "#ffffff";
-    display.colorOff = "#3b3b3b";
-    display.draw();
-    display.setValue('000');
+    function openLaunch() {
+        socket.emit('openLaunch');
+    }
 
-    var display2 = new SegmentDisplay("digitalPressure2");
-    display2.pattern = "###";
-    display2.displayAngle = 6;
-    display2.digitHeight = 20;
-    display2.digitWidth = 14;
-    display2.digitDistance = 2.5;
-    display2.segmentWidth = 2;
-    display2.segmentDistance = 0.3;
-    display2.segmentCount = 7;
-    display2.cornerType = 3;
-    display2.colorOn = "#ffffff";
-    display2.colorOff = "#3b3b3b";
-    display2.draw();
-    display2.setValue('000');
+    function closeLaunch() {
+        socket.emit('closeLaunch');
+    }
 
-    var updateDial = (function (chartselector) {
-        var w = 320,
-            h = 320;
-
-        var layout = [
-            { x: 160, y: 160, r: 150, m: 150, ticks: 2, mark: 'line' },
-//            { x: 460, y: 250, r: 200, m: 50, ticks: 4, mark: 'line' },
-//            { x: 810, y: 250, r: 120, m: 80, ticks: 2, mark: 'circle' }
-        ];
-        var charts = layout.map(function (d) {
-            return NBXDialChart()
-                    .width(d.r * 2)
-                    .height(d.r * 2)
-                    .domain([0, d.m])
-                    .range([-150, 150])
-                    .minorTicks(d.ticks)
-                    .minorMark(d.mark);
-        });
-
-        var svg = d3.select(chartselector)
-                .append('svg:svg')
-                .attr('width', w)
-                .attr('height', h);
-
-        var dials = svg.selectAll('g.dial')
-                .data(layout)
-                .enter().append('svg:g')
-                .attr('class', 'dial')
-                .attr('id', function (d, i) {
-                    return 'dial-' + i;
-                })
-                .attr('transform', function (d) {
-                    return 'translate(' + (d.x - d.r) + ',' + (d.y - d.r) + ')';
-                });
-
-        dials.each(function (d, i) {
-            d3.select(this)
-                    .data([0])
-                    .call(charts[i]);
-        });
-
-        return function (val) {
-            dials.each(function (d, i) {
-                d3.select(this)
-                        .data([val])
-                        .call(charts[i]);
-            });
-        };
-
-    })('#gauge');
 </script>
-
 </body>
 </html>

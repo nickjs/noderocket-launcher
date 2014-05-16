@@ -1,98 +1,74 @@
+// use express and listen for new websocket connections
+// turn off the websocket debug messages
 var express = require('express');
 var app = express()
-  , server = require('http').createServer(app)
-  , io = require('socket.io').listen(server);
+    , server = require('http').createServer(app)
+    , io = require('socket.io').listen(server, {log:false});
 
-var Launcher = require('./launcher/launcher');
-//var Launcher = require('./launcher/spark-launcher');
+// include the launcher
+var Launcher = require('./launcher');
 
+// serve up static files
 app.use(express.static('www'));
 
+// listen on port 8082
 server.listen(8082);
 
+// server index.html by default
 app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
+    res.sendfile(__dirname + '/index.html');
 });
 
-var launcher;
+// create the launcher instance
+var myLauncher = new Launcher();
 
-
-// Socket IO configuration
-io.sockets.on('connection', function (socket) {
-  socket.emit('hello');
-
-  socket.on('start', function(data) {
-    console.log(data);
-
-    // Initialize launcher if not already
-    if(!launcher) {
-      launcher = new Launcher(data);
-    }
+// function to link up launcher to websocket
+var linkSocket = function (socket, launcher) {
 
     // Emit launcher ready
     launcher.on('launcher-ready', function(data) {
-      socket.emit('ready', data);
+        socket.emit('ready', data);
     });
 
     // Emit launcher data
     launcher.on('launcher-data', function(data) {
-      socket.emit('data', data);
+        socket.emit('data', data);
     });
 
     // Emit launch valve data
     launcher.on('launchValve', function(data) {
-      socket.emit('launchValve', data);
+        socket.emit('launchValve', data);
     });
 
     // Emit fill valve data
     launcher.on('fillValve', function(data) {
-      socket.emit('fillValve', data);
+        socket.emit('fillValve', data);
     });
-  });
 
-  socket.on('openFill', function(){
-    console.log('openFill');
-    launcher.openFill()
-  });
+    // open and close valves
+    socket.on('openFill', function() {
+        launcher.openFill();
+    });
 
-  socket.on('closeFill', function(){
-    console.log('closeFill');
-    launcher.closeFill()
-  });
+    socket.on('closeFill', function() {
+        launcher.closeFill();
+    });
 
-  socket.on('openLaunch', function(){
-    console.log('openLaunch');
-    launcher.openLaunch()
-  });
+    socket.on('openLaunch', function() {
+        launcher.openLaunch();
+    });
 
-  socket.on('closeLaunch', function(){
-    console.log('closeLaunch');
-    launcher.closeLaunch()
-  });
+    socket.on('closeLaunch', function() {
+        launcher.closeLaunch();
+    });
 
-  socket.on('fillAndLaunch', function(psi) {
-    console.log('fillAndLaunch');
-    launcher.fillTo(psi, true);
-  });
+    socket.on('reset', function() {
+        launcher.reset();
+    });
+};
 
-  socket.on('fillTo', function(psi){
-    console.log('fill to ' + psi );
-    launcher.fillTo(psi);
-  });
-
-  socket.on('fill', function(){
-    console.log('fill');
-    launcher.fill()
-  });
-
-  socket.on('launch', function() {
-    console.log('launch');
-    launcher.launch();
-  });
-
-  socket.on('reset', function() {
-    launcher.reset();
-  })
+// Connect up the socket on connection
+io.sockets.on('connection', function(socket) {
+    socket.emit('hello');
+    linkSocket(socket, myLauncher);
 });
-
-
