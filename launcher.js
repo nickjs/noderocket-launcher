@@ -3,6 +3,7 @@
 var events = require('events');
 var j5 = require('johnny-five');
 var _ = require('underscore');
+var Spark = require('spark-io');
 
 
 function Launcher(opts) {
@@ -36,7 +37,15 @@ function Launcher(opts) {
     // Allow passing in a johnny-five board to use.
     // If there isn't one, create a new board.
 
-    this.board = this.config.board == null ? new j5.Board() : this.config.board;
+    if(this.config.board) {
+        this.board = this.config.board;
+    } else if(this.config.spark) {
+        this.board = new j5.Board({
+            io: new Spark(this.config.spark)
+        });
+    } else {
+        this.board = new j5.Board();
+    }
 
     // Set up this class as an event emitter.
 

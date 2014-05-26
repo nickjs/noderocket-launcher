@@ -7,7 +7,9 @@
     "johnny-five": "~0.7.19",
     "socket.io": "~0.9.16",
     "express": "~3.4.8",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "spark-io": "~0.4.0",
+    "commander": "~2.2.0"
   },
   "devDependencies": {},
   "scripts": {

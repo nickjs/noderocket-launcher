@@ -5,6 +5,13 @@ var app = express()
     , server = require('http').createServer(app)
     , io = require('socket.io').listen(server, {log:false});
 
+var program = require('commander');
+program
+    .version('0.0.1')
+    .option('-t, --token <token>', 'Spark Token')
+    .option('-d, --deviceId <deviceId>', 'Spark Device ID')
+    .parse(process.argv);
+
 // include the launcher
 var Launcher = require('./launcher');
 
@@ -20,7 +27,15 @@ app.get('/', function (req, res) {
 });
 
 // create the launcher instance
-var myLauncher = new Launcher();
+var myLauncher = new Launcher({
+    pressureSensorPin: "A2",
+    fillValvePin: "D4",
+    launchValvePin: "D2",
+    spark: {
+        token: program.token,
+        deviceId: program.deviceId
+    }
+});
 
 // function to link up launcher to websocket
 var linkSocket = function (socket, launcher) {
