@@ -3,7 +3,7 @@ var search = location.search.substring(1);
 var params = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
     function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
 
-var socket = io.connect('http://localhost');
+var socket = io.connect();
 socket.on('ready', function (data) {
   console.log('Launcher Ready!',data);
 });
