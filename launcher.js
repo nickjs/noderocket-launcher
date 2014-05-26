@@ -72,13 +72,13 @@ function Launcher(opts) {
         // Handle data from the pressure sensor
 
         thiz.pressureSensor.on('data', function() {
-            // the arduino reads voltage in increments of 1/1024 of 5 V
+            // the arduino reads voltage in increments of 1/1024 of 3.3 V
 
-            var voltage = this.value * (5 / 1024);
+            var voltage = this.value * (3.3 / 1024);
 
-            // Use voltage divider solve for Z2 with Vin = 5V and R1 = 270 ohm
+            // Use voltage divider solve for Z2 with Vin = 3.3V and R1 = 270 ohm
 
-            var res = 270 / ((5 / voltage) - 1);
+            var res = 270 / ((3.3 / voltage) - 1);
 
             // Use linear equation with configured slope and y intercept
             // to figure pressure
