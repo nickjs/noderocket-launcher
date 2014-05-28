@@ -27,7 +27,7 @@ var l1 = new Launcher({
     board: board,
     pressure: {
         slope: -0.46511,
-        xint: -93.95
+        yint: -93.95
     }
 });
 var l2 = new Launcher({
@@ -40,7 +40,7 @@ var l2 = new Launcher({
     board: board,
     pressure: {
         slope: -0.46511,
-        xint: -93.95
+        yint: -93.95
     }
 });
 //var l3 = new Launcher({
