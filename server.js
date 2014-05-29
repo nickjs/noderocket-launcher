@@ -8,11 +8,19 @@ var app = express()
 // include the launcher
 var Launcher = require('./launcher');
 
+// other crap
+var say = require('say');
+
+var Player = require('player');
+var music = new Player('./res/final_countdown.short.mp3');
+
 // serve up static files
 app.use(express.static('www'));
 
 // listen on port 8082
 server.listen(8082);
+
+var actions = ['openFill', 'closeFill', 'openLaunch', 'closeLaunch', 'reset'];
 
 // server index.html by default
 app.get('/', function (req, res) {
@@ -20,7 +28,48 @@ app.get('/', function (req, res) {
 });
 
 // create the launcher instance
-var myLauncher = new Launcher();
+// var myLauncher = new Launcher();
+
+var makeAction = function(action) {
+    return function() {
+        if (action == "openLaunch") {
+            music.play();
+            say.speak('Alex', '3');
+
+            var timeout = 2000;
+            var voice = 'Alex';
+            setTimeout(function() {
+                say.speak(voice, '2');
+                setTimeout(function() {
+                    say.speak(voice, '1');
+                    setTimeout(function() {
+                        say.speak(voice, 'Ignition');
+                        // myLauncher.openLaunch();
+                    }, timeout);
+                }, timeout);
+            }, timeout);
+        } else {
+            return myLauncher[action]();
+        }
+    };
+};
+
+var serverAction = function(action, callback) {
+    return function(req, res) {
+        console.log(action);
+        callback(action);
+
+        res.write(action);
+        res.end();
+    };
+};
+
+for (var i = 0; i < actions.length; i++) {
+    var action = actions[i];
+    var func = makeAction(action);
+
+    app.get('/' + action, serverAction(action, func));
+}
 
 // function to link up launcher to websocket
 var linkSocket = function (socket, launcher) {
@@ -46,25 +95,10 @@ var linkSocket = function (socket, launcher) {
     });
 
     // open and close valves
-    socket.on('openFill', function() {
-        launcher.openFill();
-    });
-
-    socket.on('closeFill', function() {
-        launcher.closeFill();
-    });
-
-    socket.on('openLaunch', function() {
-        launcher.openLaunch();
-    });
-
-    socket.on('closeLaunch', function() {
-        launcher.closeLaunch();
-    });
-
-    socket.on('reset', function() {
-        launcher.reset();
-    });
+    for (var i = 0; i < actions.length; i++) {
+        var action = actions[i];
+        socket.on(action, makeAction(action));
+    }
 };
 
 // Connect up the socket on connection

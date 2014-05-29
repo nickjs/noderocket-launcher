@@ -7,7 +7,9 @@
     "johnny-five": "~0.7.19",
     "socket.io": "~0.9.16",
     "express": "~3.4.8",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "player": "~0.1.8",
+    "say": "*"
   },
   "devDependencies": {},
   "scripts": {
