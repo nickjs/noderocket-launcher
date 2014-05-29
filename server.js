@@ -28,7 +28,7 @@ app.get('/', function (req, res) {
 });
 
 // create the launcher instance
-// var myLauncher = new Launcher();
+var myLauncher = new Launcher();
 
 var makeAction = function(action) {
     return function() {
@@ -48,6 +48,9 @@ var makeAction = function(action) {
                     }, timeout);
                 }, timeout);
             }, timeout);
+        } else if (action == "reset") {
+            music.stop();
+            return myLauncher.reset();
         } else {
             return myLauncher[action]();
         }
