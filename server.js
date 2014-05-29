@@ -44,7 +44,7 @@ var makeAction = function(action) {
                     say.speak(voice, '1');
                     setTimeout(function() {
                         say.speak(voice, 'Ignition');
-                        // myLauncher.openLaunch();
+                        myLauncher.openLaunch();
                     }, timeout);
                 }, timeout);
             }, timeout);
